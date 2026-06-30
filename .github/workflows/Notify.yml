@@ -73,15 +73,15 @@ jobs:
     if: ${{ needs.get_notifications.outputs.status == '200' && needs.get_notifications.outputs.count != '0' }}
     steps:
       - name: Notify Slack
+        uses: slackapi/slack-github-action@v2.1.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          USER_ID: ${{ secrets.SLACK_MEMBER_ID }}
-          MESSAGE: ${{ needs.get_notifications.outputs.message }}
-        run: |
-          curl -X POST "https://slack.com/api/chat.postMessage" \
-               -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-               -H "Content-Type: application/json" \
-               -d "{\"channel\": \"$USER_ID\", \"text\": $(jq -Rn --arg m "$MESSAGE" '$m')}"
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_MEMBER_ID }}
+            text: "${{ needs.get_notifications.outputs.message }}"
 
       - name: Notify Discord
         env:
