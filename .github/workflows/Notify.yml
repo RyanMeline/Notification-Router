@@ -1,0 +1,62 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Notify Me
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  Notify:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check notifications
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          HTTP_CODE=$(curl -s -o notifications.json -w "%{http_code}" \
+               -H "Authorization: token $GH_TOKEN" \
+               -H "Accept: application/vnd.github+json" \
+               -H "If-Modified-Since: $(cat last_modified.txt 2>/dev/null || echo '')" \
+               -D headers.txt \
+               "https://api.github.com/notifications")
+
+          echo "status=$HTTP_CODE" >> "$GITHUB_OUTPUT"
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            COUNT=$(jq 'length' notifications.json)
+            echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Notify Slack
+        if: steps.check.outputs.status == '200' && steps.check.outputs.count != '0'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          USER_ID: ${{ secrets.SLACK_MEMBER_ID }}
+        run: |
+          TITLES=$(jq -r '.[] | "- " + .subject.title' notifications.json | head -10)
+          MESSAGE="You have ${{ steps.check.outputs.count }} new notifications:\n$TITLES"
+          curl -X POST "https://slack.com/api/chat.postMessage" \
+               -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+               -H "Content-Type: application/json" \
+               -d "{\"channel\": \"$USER_ID\", \"text\": $(jq -Rn --arg m "$MESSAGE" '$m')}"
+
+      - name: Update timestamp and commit
+        if: steps.check.outputs.status == '200'
+        run: |
+          grep -i "last-modified" headers.txt | cut -d' ' -f2- > last_modified.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add last_modified.txt
+          git commit -m "Update last-modified timestamp" || echo "No changes"
+          git push
