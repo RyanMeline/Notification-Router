@@ -33,7 +33,7 @@ jobs:
             COUNT=$(jq 'length' notifications.json)
             echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           fi
-          echo "$COUNT"
+          echo "$HTTP_CODE"
 
       - name: Parse response
         id: parse
