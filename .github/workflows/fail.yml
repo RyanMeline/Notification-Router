@@ -1,0 +1,10 @@
+name: Force Fail
+on:
+  workflow_dispatch:
+
+jobs:
+  fail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: This will fail on purpose
+        run: exit 1
