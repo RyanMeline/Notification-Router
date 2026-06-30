@@ -80,8 +80,10 @@ jobs:
           method: chat.postMessage
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
-            channel: ${{ secrets.SLACK_MEMBER_ID }}
-            text: "${{ needs.get_notifications.outputs.message }}"
+            {
+              "channel": ${{ toJSON(secrets.SLACK_MEMBER_ID) }},
+              "text": ${{ toJSON(needs.get_notifications.outputs.message) }}
+            }
 
       - name: Notify Discord
         env:
