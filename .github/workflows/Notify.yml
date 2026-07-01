@@ -19,6 +19,7 @@ jobs:
 
       - name: Check notifications
         id: check
+        if: ${{ env.GH_TOKEN != '' }}
         env:
           GH_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
         run: |
@@ -73,9 +74,11 @@ jobs:
     if: ${{ needs.get_notifications.outputs.status == '200' && needs.get_notifications.outputs.count != '0' }}
     steps:
       - name: Notify Slack
+        if: ${{ (env.SLACK_BOT_TOKEN != '') && (env.SLACK_MEMBER_ID != '') }}
         uses: slackapi/slack-github-action@v2.1.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_MEMBER_ID: ${{ secrets.SLACK_MEMBER_ID }}
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -86,6 +89,7 @@ jobs:
             }
 
       - name: Notify Discord
+        if: ${{ env.DISCORD_URL != '' }}
         env:
           DISCORD_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           MESSAGE: ${{ needs.get_notifications.outputs.message }}
