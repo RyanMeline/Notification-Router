@@ -26,4 +26,28 @@ DISCORD_WEBHOOK_URL
 # External Scheduler
 Cron is unreliable at best, so I used an external scheduler.  
 Whatever external scheduler you want to use is fine, I used cloudflair because its easy to set up and uses secrets.  
-Have the scheduler make a POST request to "https://api.github.com/repos/[YOUR USERNAME]/[REPO NAME]/actions/workflows/Notify.yml/dispatches"
+Have the scheduler make a POST request to "https://api.github.com/repos/[YOUR USERNAME]/[REPO NAME]/actions/workflows/Notify.yml/dispatches"  
+---
+When setting up the worker for cloudflair, replace with src/index.js contents with:
+```
+export default {
+  async scheduled(event, env, ctx) {
+    const response = await fetch(
+      "https://api.github.com/repos/USERNAME/REPO/actions/workflows/WORKFLOW_NAME.yml/dispatches",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
+          "Accept": "application/vnd.github+json",
+          "User-Agent": "cloudflare-worker",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ref: "main" // the branch to run the workflow on
+        })
+      }
+    );
+    console.log("Status:", response.status);
+  }
+};
+```
