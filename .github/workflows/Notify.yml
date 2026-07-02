@@ -26,21 +26,26 @@ jobs:
                -H "If-Modified-Since: $(cat last_modified.txt 2>/dev/null || echo '')" \
                -D headers.txt \
                "https://api.github.com/notifications")
+               
           echo "status=$HTTP_CODE" >> "$GITHUB_OUTPUT"
+          
+          echo "$HTTP_CODE"
+          
           if [ "$HTTP_CODE" = "200" ]; then
             COUNT=$(jq 'length' notifications.json)
             echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           fi
-          echo "$HTTP_CODE"
+          
           if [ "$HTTP_CODE" = "403" ]; then
             echo "Invalid Credentials"
             exit 1
           fi
+          
           if [ "$HTTP_CODE" = "304" ]; then
             echo "No new notifications"
           fi
 
-      - name: Parse response
+      - name: Parse and Format response
         id: parse
         if: steps.check.outputs.status == '200' && steps.check.outputs.count != '0'
         run: |
