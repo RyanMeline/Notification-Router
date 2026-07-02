@@ -22,7 +22,7 @@ DISCORD_WEBHOOK_URL
 
 <br>
 <br>
-*Note - The Slack secrets and Discord secrets are optinal, ommiting either or both of them won't break the workflow, it just won't run that step.
+Note - The Slack secrets and Discord secrets are optinal, ommiting either or both of them won't break the workflow, it just won't run that step.
 # External Scheduler
 Cron is unreliable at best, so I used an external scheduler.  
 Whatever external scheduler you want to use is fine, I used cloudflair because its easy to set up and uses secrets.  
