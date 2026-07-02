@@ -33,6 +33,13 @@ jobs:
             echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           fi
           echo "$HTTP_CODE"
+          if [ "$HTTP_CODE" = "403" ]; then
+            echo "Invalid Credentials"
+            exit 1
+          fi
+          if [ "$HTTP_CODE" = "304" ]; then
+            echo "No new notifications"
+          fi
 
       - name: Parse response
         id: parse
