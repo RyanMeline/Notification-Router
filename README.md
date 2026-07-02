@@ -1,13 +1,13 @@
 # Secrets used:
 ## GitHub:
 GH_AUTH_TOKEN  
-- Token with the 'Notifications' permission
+- Token with the 'Notifications' permission  
 For external scheduler
 - A Token with the full 'repo' permission  
 
 ## Slack:
 SLACK_BOT_TOKEN
-- Oauth token from an App with the chat:write permission
+- Oauth token from an App with the chat:write permission  
 SLACK_MEMBER_ID
 - Channel ID for messages to be sent | User ID for DMs
 
