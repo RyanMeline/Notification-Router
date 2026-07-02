@@ -3,7 +3,7 @@ Forwards GitHub notifications to Slack and Discord
 
 # Secrets used:
 
-Note - The Slack secrets and Discord secrets are optimal, omitting either or both of them won't break the workflow, it just won't run that step.  
+Note - The Slack secrets and Discord secrets are optional, omitting either or both of them won't break the workflow, it just won't run that step.  
 
 ## GitHub:
 GH_AUTH_TOKEN  
