@@ -2,6 +2,9 @@
 Forwards GitHub notifications to Slack and Discord
 
 # Secrets used:
+
+Note - The Slack secrets and Discord secrets are optimal, omitting either or both of them won't break the workflow, it just won't run that step.  
+
 ## GitHub:
 GH_AUTH_TOKEN  
 - Token with the 'Notifications' permission
@@ -19,10 +22,6 @@ SLACK_MEMBER_ID
 ## Discord:
 DISCORD_WEBHOOK_URL
 - The Webhook URL for whatever channel you want the notifications forwarded to
-
-<br>
-<br>
-Note - The Slack secrets and Discord secrets are optimal, omitting either or both of them won't break the workflow, it just won't run that step.  
 
 # External Scheduler
 Cron is unreliable at best, so I used an external scheduler.  
