@@ -26,4 +26,4 @@ DISCORD_WEBHOOK_URL
 # External Scheduler
 Cron is unreliable at best, so I used an external scheduler.  
 Whatever external scheduler you want to use is fine, I used cloudflair because its easy to set up and uses secrets.  
-Have the scheduler make a POST request to "https://api.github.com/repos/<YOUR USERNAME\>/Notification-Router/actions/workflows/Notify.yml/dispatches"
+Have the scheduler make a POST request to "https://api.github.com/repos/<YOUR USERNAME\>/<REPO NAME\>/actions/workflows/Notify.yml/dispatches"
