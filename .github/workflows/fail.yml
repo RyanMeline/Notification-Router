@@ -1,3 +1,6 @@
+# Workflow to auto fail
+# Easy way to get a guaranteed notification to test with
+
 name: Force Fail
 on:
   workflow_dispatch:
